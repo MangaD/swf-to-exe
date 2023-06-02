@@ -1,0 +1,3 @@
+{
+    "files": ["main.py","forms/form.ui","lib/swflib.py","logo.qrc","PicPax.qrc"]
+}

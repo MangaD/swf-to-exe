@@ -1,0 +1,31 @@
+RCC           = rcc
+UIC           = uic
+
+BUILD_DIR     = build
+RESOURCES_DIR = resources
+MODULES_DIR   = modules
+FORMS_DIR     = ${MODULES_DIR}/forms
+
+# QRC is a list of the .qrc files in the resources directory.
+QRC = $(wildcard $(RESOURCES_DIR)/*.qrc)
+# QRC_OBJ is a list of the python files to be generated in the build directory.
+QRC_OBJ = $(addprefix $(BUILD_DIR)/rc_, $(notdir $(QRC:.qrc=.py)))
+
+UI = $(wildcard $(FORMS_DIR)/*.ui)
+UI_OBJ = $(addprefix $(BUILD_DIR)/ui_, $(notdir $(UI:.ui=.py)))
+
+all: $(BUILD_DIR) $(QRC_OBJ) $(UI_OBJ)
+
+$(BUILD_DIR)/rc_%.py: $(RESOURCES_DIR)/%.qrc
+	$(RCC) $< -o $@
+
+$(BUILD_DIR)/ui_%.py: $(FORMS_DIR)/%.ui
+	$(UIC) $< -o $@
+
+$(BUILD_DIR):
+	mkdir -p build
+
+clean:
+	rm -rf .ropeproject
+	rm -rf $(MODULES_DIR)/__pycache__ $(FORMS_DIR)/__pycache__
+	rm -rf $(BUILD_DIR)
