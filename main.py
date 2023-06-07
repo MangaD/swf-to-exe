@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
         self.ui.actionExit.triggered.connect(lambda self_ : sys.exit())
         self.ui.actionAbout.triggered.connect(self.about)
         self.ui.addSwfBtn.clicked.connect(self.addSwfFile)
+        self.ui.removeSwfBtn.clicked.connect(self.removeSwfFiles)
         self.setTheme()
 
 
@@ -37,6 +38,11 @@ class MainWindow(QMainWindow):
     def addSwfFile(self):
         fileList = self.openFileNamesDialog()
         self.ui.swfList.addItems(fileList)
+
+    @Slot()
+    def removeSwfFiles(self):
+        for item in self.ui.swfList.selectedItems():
+            self.ui.swfList.takeItem(self.ui.swfList.row(item))
 
     def openFileNamesDialog(self):
         DEFAULT_DIR_KEY = "default_dir"
