@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialo
 from PySide6.QtCore import (
     Slot, QFile, QIODevice,
     QTextStream, QCoreApplication,
-    QSettings, QDir
+    QSettings, QDir, QEvent
 )
 
 from forms.ui_form import Ui_MainWindow
@@ -20,8 +20,11 @@ class MainWindow(QMainWindow):
         self.ui.actionAbout.triggered.connect(self.about)
         self.ui.addSwfBtn.clicked.connect(self.addSwfFile)
         self.ui.removeSwfBtn.clicked.connect(self.removeSwfFiles)
-        self.setTheme()
 
+        # https://stackoverflow.com/a/38860594/3049315
+        self.ui.swfList.installEventFilter(self)
+
+        self.setTheme()
 
     def setTheme(self):
         styleFile = QFile(u":/theme/resources/PicPax.qss")
@@ -58,6 +61,22 @@ class MainWindow(QMainWindow):
             currentDir = QDir()
             settings.setValue(DEFAULT_DIR_KEY, currentDir.absoluteFilePath(files[-1]));
         return files
+
+    def eventFilter(self, object, event):
+        if object.objectName() == "swfList":
+            if event.type() == QEvent.DragEnter:
+                #print("DragEnter")
+                if event.mimeData().hasUrls():
+                    event.acceptProposedAction()
+                return True
+            if event.type() == QEvent.Drop:
+                #print("Drop")
+                # https://stackoverflow.com/a/45672412/3049315
+                for url in event.mimeData().urls():
+                    self.ui.swfList.addItem(str(url.toLocalFile()))
+                return True
+        return False
+
 
 # Set up info for using with QSettings
 # https://stackoverflow.com/a/3598245/3049315

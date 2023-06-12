@@ -52,6 +52,9 @@
      </item>
      <item row="0" column="0" rowspan="4" colspan="2">
       <widget class="QListWidget" name="swfList">
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
        <property name="selectionMode">
         <enum>QAbstractItemView::MultiSelection</enum>
        </property>

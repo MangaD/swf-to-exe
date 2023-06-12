@@ -30,5 +30,6 @@ See [LICENSE.md](LICENSE.md).
 - [pyside6-deploy: the deployment tool for Qt for Python](https://doc.qt.io/qtforpython-6/deployment/deployment-pyside6-deploy.html)
 - [Qt: The Meta-Object System](https://doc.qt.io/qt-6/metaobjects.html)
 - [Qt: Signals & Slots](https://doc.qt.io/qt-6/signalsandslots.html)
+- [Qt: The Event System](https://doc.qt.io/qt-6/eventsandfilters.html)
 - [Meta-Object Compiler (moc)](https://doc.qt.io/qt-6/moc.html)
 - [User Interface Compiler (uic)](https://doc.qt.io/qt-6/uic.html)
