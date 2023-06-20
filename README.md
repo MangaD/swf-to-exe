@@ -33,3 +33,4 @@ See [LICENSE.md](LICENSE.md).
 - [Qt: The Event System](https://doc.qt.io/qt-6/eventsandfilters.html)
 - [Meta-Object Compiler (moc)](https://doc.qt.io/qt-6/moc.html)
 - [User Interface Compiler (uic)](https://doc.qt.io/qt-6/uic.html)
+- [Qt 6 Documentation](https://doc.qt.io/qt-6/)
