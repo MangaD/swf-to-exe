@@ -43,6 +43,13 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Output file:</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -57,18 +64,15 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
-      <widget class="QLineEdit" name="saLineEdit"/>
-     </item>
-     <item row="1" column="0" rowspan="3" colspan="3">
-      <widget class="QListWidget" name="swfList">
-       <property name="acceptDrops">
-        <bool>true</bool>
-       </property>
-       <property name="selectionMode">
-        <enum>QAbstractItemView::MultiSelection</enum>
+     <item row="5" column="0" colspan="3">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Adobe Flash Player Projector:</string>
        </property>
       </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLineEdit" name="saLineEdit"/>
      </item>
      <item row="6" column="1">
       <widget class="QPushButton" name="saFileBtn">
@@ -84,17 +88,30 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="2">
-      <widget class="QCommandLinkButton" name="commandLinkButton">
-       <property name="text">
-        <string>Convert</string>
+     <item row="1" column="0" rowspan="3" colspan="3">
+      <widget class="QListWidget" name="swfList">
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::MultiSelection</enum>
        </property>
       </widget>
      </item>
-     <item row="5" column="0" colspan="3">
-      <widget class="QLabel" name="label">
+     <item row="8" column="0">
+      <widget class="QLineEdit" name="outFileLineEdit"/>
+     </item>
+     <item row="8" column="1">
+      <widget class="QPushButton" name="saveFileBtn">
        <property name="text">
-        <string>Adobe Flash Player Projector:</string>
+        <string>Save file...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2" rowspan="3">
+      <widget class="QCommandLinkButton" name="commandLinkButton">
+       <property name="text">
+        <string>Convert</string>
        </property>
       </widget>
      </item>

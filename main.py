@@ -21,6 +21,7 @@ class MainWindow(QMainWindow):
         self.ui.addSwfBtn.clicked.connect(self.addSwfFiles)
         self.ui.removeSwfBtn.clicked.connect(self.removeSwfFiles)
         self.ui.saFileBtn.clicked.connect(self.addSAFile)
+        self.ui.saveFileBtn.clicked.connect(self.selectOutputFile)
 
         # https://stackoverflow.com/a/38860594/3049315
         self.ui.swfList.installEventFilter(self)
@@ -50,9 +51,13 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def addSAFile(self):
-        file = self.openSaFileNameDialog()
-        print(file)
+        file = self.openExeFileNameDialog("default_sa_dir", "Select file")
         self.ui.saLineEdit.setText(file)
+
+    @Slot()
+    def selectOutputFile(self):
+        file = self.getSaveFileNameDialog("default_out_dir", "Select file")
+        self.ui.outFileLineEdit.setText(file)
 
     def openSwfFileNamesDialog(self):
         DEFAULT_SWF_DIR_KEY = "default_swf_dir"
@@ -69,19 +74,32 @@ class MainWindow(QMainWindow):
             settings.setValue(DEFAULT_SWF_DIR_KEY, currentDir.absoluteFilePath(files[-1]));
         return files
 
-    def openSaFileNameDialog(self):
-        DEFAULT_SA_DIR_KEY = "default_sa_dir"
+    def openExeFileNameDialog(self, default_dir, caption):
         settings = QSettings()
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         file, _ = QFileDialog.getOpenFileName(self,
-            "Select file",
-            settings.value(DEFAULT_SA_DIR_KEY),
+            caption,
+            settings.value(default_dir),
             "EXE files (*.exe);;All Files (*)",
             options=options)
         if file:
             currentDir = QDir()
-            settings.setValue(DEFAULT_SA_DIR_KEY, currentDir.absoluteFilePath(file));
+            settings.setValue(default_dir, currentDir.absoluteFilePath(file));
+        return file
+
+    def getSaveFileNameDialog(self, default_dir, caption):
+        settings = QSettings()
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file, _ = QFileDialog.getSaveFileName(self,
+            "Save file",
+            settings.value(default_dir),
+            "EXE files (*.exe)",
+            options=options)
+        if file:
+            currentDir = QDir()
+            settings.setValue(default_dir, currentDir.absoluteFilePath(file));
         return file
 
     def eventFilter(self, object, event):
