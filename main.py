@@ -1,3 +1,4 @@
+import os
 import sys
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog
@@ -8,6 +9,8 @@ from PySide6.QtCore import (
 )
 
 from forms.ui_form import Ui_MainWindow
+
+from lib.swflib import swf2exe_win
 
 import rc_PicPax
 
@@ -21,7 +24,8 @@ class MainWindow(QMainWindow):
         self.ui.addSwfBtn.clicked.connect(self.addSwfFiles)
         self.ui.removeSwfBtn.clicked.connect(self.removeSwfFiles)
         self.ui.saFileBtn.clicked.connect(self.addSAFile)
-        self.ui.saveFileBtn.clicked.connect(self.selectOutputFile)
+        self.ui.chooseDirBtn.clicked.connect(self.selectOutputDirectory)
+        self.ui.convertBtn.clicked.connect(self.convertAll)
 
         # https://stackoverflow.com/a/38860594/3049315
         self.ui.swfList.installEventFilter(self)
@@ -41,7 +45,7 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def addSwfFiles(self):
-        fileList = self.openSwfFileNamesDialog()
+        fileList = self.openSwfFileNamesDialog("default_swf_dir", "Select SWF file(s)")
         self.ui.swfList.addItems(fileList)
 
     @Slot()
@@ -51,27 +55,48 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def addSAFile(self):
-        file = self.openExeFileNameDialog("default_sa_dir", "Select file")
+        file = self.openExeFileNameDialog("default_sa_dir", "Select Adobe Flash Player SA file")
         self.ui.saLineEdit.setText(file)
 
     @Slot()
-    def selectOutputFile(self):
-        file = self.getSaveFileNameDialog("default_out_dir", "Select file")
-        self.ui.outFileLineEdit.setText(file)
+    def selectOutputDirectory(self):
+        dir = self.getSaveDirDialog("default_out_dir", "Choose output directory")
+        self.ui.outFileLineEdit.setText(dir)
 
-    def openSwfFileNamesDialog(self):
-        DEFAULT_SWF_DIR_KEY = "default_swf_dir"
+    @Slot()
+    def convertAll(self):
+        saFile = self.ui.saLineEdit.text()
+        if not saFile:
+            QMessageBox.information(
+                self,
+                QCoreApplication.applicationName(),
+                "You must select an Adobe Flash Player SA file.")
+            return
+        if self.ui.swfList.count() == 0:
+            QMessageBox.information(
+                self,
+                QCoreApplication.applicationName(),
+                "You must select at least one SWF file to convert.")
+            return
+        for i in range(self.ui.swfList.count()):
+            swfFile = self.ui.swfList.item(i).text()
+            outFile = os.path.join(self.ui.outFileLineEdit.text(), os.path.basename(swfFile))
+            outFile = os.path.splitext(outFile)[0]+'.exe'
+            print(f"Converting:\n-{swfFile}\n-{outFile}")
+            swf2exe_win(swfFile, outFile, saFile)
+
+    def openSwfFileNamesDialog(self, default_dir, caption):
         settings = QSettings()
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         files, _ = QFileDialog.getOpenFileNames(self,
-            "Select file(s)",
-            settings.value(DEFAULT_SWF_DIR_KEY),
+            caption,
+            settings.value(default_dir),
             "Shockwave Flash (*.swf);;All Files (*)",
             options=options)
         if files:
             currentDir = QDir()
-            settings.setValue(DEFAULT_SWF_DIR_KEY, currentDir.absoluteFilePath(files[-1]));
+            settings.setValue(default_dir, currentDir.absoluteFilePath(files[-1]));
         return files
 
     def openExeFileNameDialog(self, default_dir, caption):
@@ -88,19 +113,19 @@ class MainWindow(QMainWindow):
             settings.setValue(default_dir, currentDir.absoluteFilePath(file));
         return file
 
-    def getSaveFileNameDialog(self, default_dir, caption):
+    def getSaveDirDialog(self, default_dir, caption):
         settings = QSettings()
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        file, _ = QFileDialog.getSaveFileName(self,
-            "Save file",
+        options |= QFileDialog.ShowDirsOnly
+        options |= QFileDialog.DontResolveSymlinks
+        dir = QFileDialog.getExistingDirectory(self,
+            caption,
             settings.value(default_dir),
-            "EXE files (*.exe)",
             options=options)
-        if file:
-            currentDir = QDir()
-            settings.setValue(default_dir, currentDir.absoluteFilePath(file));
-        return file
+        if dir:
+            settings.setValue(default_dir, dir);
+        return dir
 
     def eventFilter(self, object, event):
         if object.objectName() == "swfList":
